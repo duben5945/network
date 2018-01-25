@@ -1,0 +1,107 @@
+#H3C S7503E-S
+
+#配置全局参数
+sysname S7503E-S_CORE
+
+#开启telnet
+telnet server enable
+
+interface vlan-interfan1
+ip address 172.16.0.1 255.255.255.0
+quit
+
+配置console
+user-interface aux 0
+authentication-mode password
+set authetication password cipher 123456
+use privilege level 0
+
+配置telnet
+user-interface vty 0 4
+user privilege level 3
+authentication-mode password
+set authetication password cipher 123456
+
+
+local-user admin
+password cipher 
+authorization-attribute level 3
+
+
+#VLAN
+vlan 1
+
+vlan 10
+description wifi-keyong
+port e0/0/1 to e0/0/10
+quit
+
+vlan 20
+descriotion office
+port e0/0/11 to e0/0/20
+quit
+
+vlan 30
+description new office
+prot e0/0/21 to e0/0/25
+quit
+
+
+vlan 999
+description to-Router
+
+domain system
+access-limit disable
+state active
+idle-cut disable
+self-service-url disable
+
+#VLAN10的DHCP服务配置
+dhcp server ip-pool vlan10 extended
+network ip range 172.16.0.2 172.16.7.200
+network mask 255.255.248.0
+gateway-list 172.16.7.254
+dns-list 219.148.204.66 219.150.32.132
+expired day 0 hour 3
+
+#VLAN20的DHCP服务配置
+dhcp server ip-pool vlan20 extended
+network ip range 172.16.20.1 172.16.20.100
+network mask 255.255.255.0
+gateway-list 172.16.20.254
+dns-list 219.148.204.66 219.150.32.132
+
+#VLAN30的DHCP服务配置
+dhcp server ip-pool vlan30 extended
+network ip range 172.16.30.1 172.16.30.200
+network mask 255.255.255.0
+gateway-list 172.16.30.254
+dns-list 219.148.204.66 219.150.32.132
+expired day 0 hour 3
+
+
+
+
+
+#配置接口IP
+
+interface Vlan-interface10
+ip address 172.16.7.254 255.255.248.0
+dhcp select server global-pool
+
+interface Vlan-interface20
+ip address 172.16.20.254 255.255.255.0
+dhcp select server global-pool
+
+interface Vlan-interface 30
+ip address 172.16.30.254 255.255.255.0
+dhcp select server global-pool
+
+
+interface Vlan-interface 999
+ip address 10.10.10.2 255.255.255.0
+port access vlan 999
+port link-type trunk
+port trunk permit vlan all
+
+
