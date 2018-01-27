@@ -14,7 +14,7 @@ quit
 user-interface aux 0
 authentication-mode password
 set authetication password cipher 123456
-use privilege level 0
+user privilege level 3
 
 配置telnet
 user-interface vty 0 4
